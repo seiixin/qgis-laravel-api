@@ -9,7 +9,7 @@ return new class extends Migration {
             $table->id();
             $table->string('user_identifier',100);
             $table->string('name',100);
-            $table->string('phone_number',30);
+            $table->string('contact_number',30);
             $table->string('relationship',50)->nullable();
             $table->timestamp('created_at')->useCurrent();
         });
