@@ -19,6 +19,10 @@ class DatabaseSeeder extends Seeder
          $this->call([
             AdminUserSeeder::class,
             RegularUserSeeder::class,
+            MapSeeder::class,
+            ImpactResultSeeder::class,
+            ChecklistItemSeeder::class,
+            EarthquakeInfoSeeder::class,
         ]);
 
     }

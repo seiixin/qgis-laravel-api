@@ -8,9 +8,11 @@ class AddRelationshipToUserContacts extends Migration
 {
     public function up()
     {
-        Schema::table('user_contacts', function (Blueprint $table) {
-            $table->string('relationship')->nullable(); // Add the relationship column
-        });
+        if (!Schema::hasColumn('user_contacts', 'relationship')) {
+            Schema::table('user_contacts', function (Blueprint $table) {
+                $table->string('relationship')->nullable();
+            });
+        }
     }
 
     public function down()

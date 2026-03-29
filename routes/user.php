@@ -18,7 +18,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/earthquake/checklist/progress', [ChecklistController::class, 'saveChecklistCompletion']);
     Route::get('/maps', [MapController::class, 'index']);
     Route::get('/maps/{id}', [MapController::class, 'show']);
-    Route::get('/maps/{id}/offline', [MapController::class, 'offline']);    
+    Route::get('/maps/{id}/offline', [MapController::class, 'offline']);
+    Route::get('/geojson', [MapController::class, 'geojsonList']);
+    Route::get('/geojson/{layer}', [MapController::class, 'geojson']);
     Route::get('/earthquake/audio',[MediaController::class,'audio']);
     Route::get('/earthquake/videos',[MediaController::class,'videos']);
     Route::get('/earthquake-info', [InfoController::class, 'index']);

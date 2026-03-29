@@ -10,18 +10,32 @@ class MapController extends Controller
 {
     public function store(Request $request)
     {
-        return Map::create($request->only([
-            'name','type','map_url','description','is_active'
-        ]));
+        $data = $request->validate([
+            'name'        => 'required|string|max:100',
+            'type'        => 'required|in:evacuation,hazard,geojson,wms',
+            // map_url must be a valid URL for tile/WMS/embed sources,
+            // OR a relative path like "geojson/BRGY_BOUNDS" for GeoJSON layers.
+            'map_url'     => 'required|string',
+            'description' => 'nullable|string',
+            'is_active'   => 'boolean',
+        ]);
+
+        return response()->json(Map::create($data), 201);
     }
 
     public function update(Request $request, $id)
     {
-        $map = Map::findOrFail($id);
-        $map->update($request->only([
-            'name','map_url','description','is_active'
-        ]));
-        return $map;
+        $map  = Map::findOrFail($id);
+        $data = $request->validate([
+            'name'        => 'sometimes|string|max:100',
+            'type'        => 'sometimes|in:evacuation,hazard,geojson,wms',
+            'map_url'     => 'sometimes|string',
+            'description' => 'nullable|string',
+            'is_active'   => 'boolean',
+        ]);
+
+        $map->update($data);
+        return response()->json($map, 200);
     }
 
     public function storeOffline(Request $request)

@@ -49,4 +49,27 @@ class MapController extends Controller
 
         return response()->json($offlineMaps, 200);
     }
+
+    /**
+     * List available GeoJSON layer names.
+     */
+    public function geojsonList()
+    {
+        $dir    = public_path('geojson');
+        $files  = glob($dir . '/*.geojson') ?: [];
+        $layers = array_map(fn($f) => pathinfo($f, PATHINFO_FILENAME), $files);
+        return response()->json(array_values($layers), 200);
+    }
+
+    /**
+     * Serve a GeoJSON layer by name.
+     */
+    public function geojson(string $layer)
+    {
+        $path = public_path('geojson/' . $layer . '.geojson');
+        if (!file_exists($path)) {
+            return response()->json(['message' => 'Layer not found.'], 404);
+        }
+        return response()->file($path, ['Content-Type' => 'application/geo+json']);
+    }
 }

@@ -16,13 +16,14 @@ class RegularUserSeeder extends Seeder
      */
     public function run()
     {
-        // Create a regular user
-        User::create([
-            'name' => 'Regular User',
-            'email' => 'regular@example.com',
-            'password' => Hash::make('password123'),
-            'role' => 'user',  // Assuming 'role' is a column in your User model
-            'username' => 'regularuser123',  // Assuming 'username' is a column in your User model
-        ]);
+        User::updateOrCreate(
+            ['email' => 'regular@example.com'],
+            [
+                'name'     => 'Regular User',
+                'password' => Hash::make('password123'),
+                'role'     => 'user',
+                'username' => 'regularuser123',
+            ]
+        );
     }
 }
