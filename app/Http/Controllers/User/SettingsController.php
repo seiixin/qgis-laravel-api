@@ -12,7 +12,7 @@ class SettingsController extends Controller
     public function update(Request $request)
     {
         return AppSetting::updateOrCreate(
-            ['user_identifier' => $request->user()->id],
+            ['user_id' => $request->user()->id],
             $request->only(['language', 'font_size', 'dark_mode', 'text_to_speech'])
         );
     }
