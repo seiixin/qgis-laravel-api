@@ -1,23 +1,23 @@
 <?php
-
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\EarthquakeInfo;
+use Illuminate\Http\Request;
 
 class InfoController extends Controller
 {
     /**
-     * Get all earthquake information.
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * Gap 5 fix: filter by ?language= query param
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Fetch all earthquake information from the EarthquakeInfo model
-        $earthquakeInfo = EarthquakeInfo::select('id', 'title', 'content', 'media_type', 'media_url', 'language')->get();
+        $query = EarthquakeInfo::select('id', 'title', 'content', 'media_type', 'media_url', 'language');
 
-        // Return the earthquake information in JSON format
-        return response()->json($earthquakeInfo, 200);
+        if ($request->filled('language')) {
+            $query->where('language', $request->language);
+        }
+
+        return response()->json($query->get(), 200);
     }
 }
