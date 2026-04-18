@@ -72,4 +72,50 @@ class MapController extends Controller
         }
         return response()->file($path, ['Content-Type' => 'application/geo+json']);
     }
+
+    /**
+     * Proxy OSRM routing so the mobile app doesn't need direct external access.
+     * GET /api/route?from_lat=&from_lng=&to_lat=&to_lng=
+     */
+    public function route(Request $request)
+    {
+        $request->validate([
+            'from_lat' => 'required|numeric',
+            'from_lng' => 'required|numeric',
+            'to_lat'   => 'required|numeric',
+            'to_lng'   => 'required|numeric',
+        ]);
+
+        $fromLng = $request->from_lng;
+        $fromLat = $request->from_lat;
+        $toLng   = $request->to_lng;
+        $toLat   = $request->to_lat;
+
+        $url = "https://router.project-osrm.org/route/v1/driving/{$fromLng},{$fromLat};{$toLng},{$toLat}?overview=full&geometries=geojson";
+
+        try {
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json']);
+            $body   = curl_exec($ch);
+            $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            if ($status === 200 && $body) {
+                $data = json_decode($body, true);
+                if (($data['code'] ?? '') === 'Ok' && !empty($data['routes'][0])) {
+                    return response()->json([
+                        'ok'          => true,
+                        'coordinates' => $data['routes'][0]['geometry']['coordinates'],
+                        'distance'    => $data['routes'][0]['distance'],
+                    ]);
+                }
+            }
+        } catch (\Throwable $e) {
+            // fall through
+        }
+
+        return response()->json(['ok' => false, 'message' => 'Routing failed'], 502);
+    }
 }

@@ -37,7 +37,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Impact results
     Route::get('/impact-results', [ImpactController::class, 'index']);
 
-    // Emergency contacts — Gap 3 fix: added GET /emergency/contacts
+    // Route proxy — forwards to OSRM so the mobile app doesn't need direct access
+    Route::get('/route', [MapController::class, 'route']);
     Route::get('/emergency/hotlines', [ContactController::class, 'hotlines']);
     Route::get('/emergency/contacts', [ContactController::class, 'index']);
     Route::post('/emergency/contacts', [ContactController::class, 'store']);
