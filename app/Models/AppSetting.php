@@ -15,7 +15,11 @@ class AppSetting extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'language', 'font_size', 'dark_mode', 'text_to_speech'
+        'user_id', 'language', 'font_size', 'dark_mode', 'text_to_speech', 'checklist_progress',
+    ];
+
+    protected $casts = [
+        'checklist_progress' => 'array',
     ];
 
     /**

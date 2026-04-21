@@ -16,8 +16,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/settings/language', [SettingsController::class, 'updateLanguage']);
     Route::put('/settings/accessibility', [SettingsController::class, 'updateAccessibility']);
 
-    // Checklist — Gap 1, 2, 6 fixed in controller
+    // Checklist
     Route::get('/checklist-items', [ChecklistController::class, 'viewChecklist']);
+    Route::get('/checklist-progress', [ChecklistController::class, 'getProgress']);
+    Route::put('/checklist-progress', [ChecklistController::class, 'saveProgress']);
     Route::post('/earthquake/checklist/progress', [ChecklistController::class, 'saveChecklistCompletion']);
 
     // Maps & GeoJSON
