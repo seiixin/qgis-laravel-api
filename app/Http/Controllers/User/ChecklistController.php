@@ -5,12 +5,38 @@ use App\Http\Controllers\Controller;
 use App\Models\ChecklistItem;
 use App\Models\ChecklistProgress;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ChecklistController extends Controller
 {
     /**
-     * Gap 1 fix: return field as "label" (aliased from "instruction")
-     * Gap 6 fix: filter by ?language= query param
+     * Map string item keys (b1-b7, a1-a7) to stable integers.
+     * This avoids needing checklist_items rows in the DB.
+     */
+    private static function keyToId(string $key): int
+    {
+        $map = [
+            'b1' => 101, 'b2' => 102, 'b3' => 103, 'b4' => 104,
+            'b5' => 105, 'b6' => 106, 'b7' => 107,
+            'a1' => 201, 'a2' => 202, 'a3' => 203, 'a4' => 204,
+            'a5' => 205, 'a6' => 206, 'a7' => 207,
+        ];
+        return $map[$key] ?? crc32($key) & 0x7FFFFFFF;
+    }
+
+    private static function idToKey(int $id): string
+    {
+        $map = array_flip([
+            'b1' => 101, 'b2' => 102, 'b3' => 103, 'b4' => 104,
+            'b5' => 105, 'b6' => 106, 'b7' => 107,
+            'a1' => 201, 'a2' => 202, 'a3' => 203, 'a4' => 204,
+            'a5' => 205, 'a6' => 206, 'a7' => 207,
+        ]);
+        return $map[$id] ?? (string) $id;
+    }
+
+    /**
+     * GET /checklist-items — return checklist items by language.
      */
     public function viewChecklist(Request $request)
     {
@@ -24,39 +50,55 @@ class ChecklistController extends Controller
     }
 
     /**
-     * Get the current user's checklist progress (stored as JSON in app_settings).
-     * Returns { "b1": true, "b2": false, ... }
+     * GET /checklist-progress — return { "b1": true, "b2": false, ... }
      */
     public function getProgress(Request $request)
     {
-        $settings = \App\Models\AppSetting::where('user_id', $request->user()->id)->first();
-        $progress = $settings?->checklist_progress ?? [];
-        return response()->json((object) $progress, 200);
+        $userId = $request->user()->id;
+
+        $rows = ChecklistProgress::where('user_identifier', $userId)->get();
+
+        $result = [];
+        foreach ($rows as $row) {
+            $key = self::idToKey($row->checklist_id);
+            $result[$key] = (bool) $row->is_completed;
+        }
+
+        return response()->json((object) $result, 200);
     }
 
     /**
-     * Save checklist progress as a JSON blob.
-     * Accepts { "b1": true, "b2": false, ... }
+     * PUT /checklist-progress — save { "b1": true, "b2": false, ... }
      */
     public function saveProgress(Request $request)
     {
-        $request->validate(['*' => 'boolean']);
+        $userId = $request->user()->id;
+        $data   = $request->all();
 
-        \App\Models\AppSetting::updateOrCreate(
-            ['user_id' => $request->user()->id],
-            ['checklist_progress' => $request->all()]
-        );
+        foreach ($data as $key => $value) {
+            $checklistId = self::keyToId((string) $key);
+
+            ChecklistProgress::updateOrCreate(
+                [
+                    'checklist_id'    => $checklistId,
+                    'user_identifier' => $userId,
+                ],
+                ['is_completed' => (bool) $value]
+            );
+        }
 
         return response()->json(['message' => 'Progress saved'], 200);
-    } { "progress": [{ "checklist_item_id": 1, "is_completed": true }] }
-     * Also still accepts single-item format for backwards compatibility.
+    }
+
+    /**
+     * POST /earthquake/checklist/progress — legacy batch format.
      */
     public function saveChecklistCompletion(Request $request)
     {
         $request->validate([
-            'progress'                          => 'required|array|min:1',
-            'progress.*.checklist_item_id'      => 'required|integer|exists:checklist_items,id',
-            'progress.*.is_completed'           => 'required|boolean',
+            'progress'                     => 'required|array|min:1',
+            'progress.*.checklist_item_id' => 'required|integer',
+            'progress.*.is_completed'      => 'required|boolean',
         ]);
 
         $userId = $request->user()->id;
@@ -64,8 +106,8 @@ class ChecklistController extends Controller
         foreach ($request->progress as $item) {
             ChecklistProgress::updateOrCreate(
                 [
-                    'checklist_id'      => $item['checklist_item_id'],
-                    'user_identifier'   => $userId,
+                    'checklist_id'    => $item['checklist_item_id'],
+                    'user_identifier' => $userId,
                 ],
                 ['is_completed' => $item['is_completed']]
             );

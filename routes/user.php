@@ -21,7 +21,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/checklist-progress', [ChecklistController::class, 'getProgress']);
     Route::put('/checklist-progress', [ChecklistController::class, 'saveProgress']);
     Route::post('/earthquake/checklist/progress', [ChecklistController::class, 'saveChecklistCompletion']);
-
     // Maps & GeoJSON
     Route::get('/maps', [MapController::class, 'index']);
     Route::get('/maps/{id}', [MapController::class, 'show']);
