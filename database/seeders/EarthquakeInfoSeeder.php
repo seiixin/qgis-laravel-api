@@ -103,6 +103,53 @@ class EarthquakeInfoSeeder extends Seeder
                 'content'  => "1. Suriin ang sarili at iba kung may sugat.\n2. Mag-ingat sa mga panganib: gas leak, sirang kable, nasirang gusali.\n3. Makinig sa opisyal na anunsyo.\n4. Iwasan ang mga nasirang lugar; maghanda para sa aftershocks.\n5. Bumalik lamang kung ligtas na.",
                 'language' => 'Tagalog',
             ],
+
+            // ── Kapampangan ───────────────────────────────────────────────────
+            [
+                'title'    => 'Nanu ing Lindol?',
+                'content'  => 'Ing lindol metung yang natural a pangyari a malyari nung ing luta mitatalagku king lalung-lalam na parte ning crust na ning Yatu, a makapagtatalagku king ibabaw. Ining pagtatalagku malyari nung ing naipun a presyon king lalung-lalam ning luta biglang palwal.',
+                'language' => 'Kapampangan',
+            ],
+            [
+                'title'    => 'Mga Uzung Sanhi ning Lindol',
+                'content'  => "Ining mga pangunahing sanhi:\n• Galaw ning tectonic plates\n• Aktibidad ning bulkan\n• Mga fault line\n• Mga gawa ning tau",
+                'language' => 'Kapampangan',
+            ],
+            [
+                'title'    => 'West Valley Fault',
+                'content'  => "Ing West Valley Fault metung yang aktibung fault line king Pilipinas a dumalan king diling bahagi ning Bulacan, Rizal, Laguna, at Metro Manila. Ayon kay PHIVOLCS, malyari yang makapagtabu ning magnitude 7.2 a lindol — kilala bilang \"The Big One.\"\n\nKung malyari iti, ing mga lugal a nung nong Apalit king Pampanga malyari yang makaranas ning Intensity VI–VII a pagtatalagku, a makaparusak king mga gusaling e maayus ing pagkatayo. Malyari naman ing liquefaction king mababang lugal.",
+                'language' => 'Kapampangan',
+            ],
+            [
+                'title'    => 'East Zambales Fault',
+                'content'  => "Ing East Zambales Fault metung yang aktibung fault line king probinsya ning Zambales. Ayon king mga pag-aaral, malyari yang makapagtabu ning lindol a magnitude 7.4 — a makapagtabu ning maragul a pagtatalagku, pagkasira ning mga gusali, at pagguho ning lupa king mga karatig lugal.",
+                'language' => 'Kapampangan',
+            ],
+            [
+                'title'    => '1990 Luzon Earthquake (Magnitude 7.8)',
+                'content'  => "King Hulyo 16, 1990, alas 4:26 ning hapon, nagtatalagku ing Central Luzon. Magnitude 7.8 at ing epicenter malapit king Rizal, Nueva Ecija (15.6°N, 121.0°E). Ing maragul at atyu-atyung pagtatalagku makapagtabu ning maragul a panirasak — mga nabuwal a gusali, liquefaction, at pagguho ning lupa. Tinatayang 2,412 a tau ing namate at libu-libu ing nasugatan.",
+                'language' => 'Kapampangan',
+            ],
+            [
+                'title'    => '2019 Zambales Earthquake (Magnitude 6.1)',
+                'content'  => "King Abril 22, 2019, alas 5:11 ning hapon, metung a magnitude 6.1 a lindol ing tumama king Zambales at Pampanga. Ing epicenter nasa 18 km silangan ning Castillejos, Zambales, king 10 km a kalaliman. 29 a gusali ing nasira king Pampanga, at 18 a tau ing namate. Ing Chuzon Supermarket king Porac, Pampanga nabuwal at limang tau ing namate. Ding aliwa pang namate binanggit king Lubao, Angeles City, at San Marcelino, Zambales.",
+                'language' => 'Kapampangan',
+            ],
+            [
+                'title'    => 'Kaligtasan: Bago ing Lindol',
+                'content'  => "1. Maglaan ning emergency kit: danum, pamangan, flashlight, baterya, first aid kit, mahahalagang dokumento.\n2. Aralan mu kung nanu ing paralan a patayin ing gas, danum, at kuryente.\n3. Siguraduhing maayus ing pagkaka-secure ning mabibigat a kasangkapan.\n4. Ilagak ing mabibigat a bagay king mababang lugar.\n5. Gumawa kang family emergency plan — nukarin mekikipagkita at nanu ing gagawin.\n6. Aralan mu ing safety plan king eskwelahan o trabahu.",
+                'language' => 'Kapampangan',
+            ],
+            [
+                'title'    => 'Kaligtasan: Keng Panahon ning Lindol',
+                'content'  => "1. Manatiling mapanatag at e mag-panic.\n2. Nung nasa laub ka: Gumawa ning \"Drop, Cover, at Hold On\" king laum ning matatag a lamesa o desk.\n3. Lumayo ka king mga salamin at bagay a malyaring mabuwal.\n4. Nung nasa lual ka: pumunta ka king bukas a lugar, malayo king mga gusali, puno, at linya ning kuryente.\n5. Nung nasa sasakyan ka: huminto ka king ligtas a lugar at manatili ka laub anggang matapos ing pagtatalagku.\n6. E ka gumamit ning elevator.",
+                'language' => 'Kapampangan',
+            ],
+            [
+                'title'    => 'Kaligtasan: Kaibat ning Lindol',
+                'content'  => "1. Suriin mu ing sarili mu at ding aliwa kung atin sugat; magbigay ning first aid nung kailangan.\n2. Mag-ingat ka king mga panganib: gas leak, sirang kable, nasirang gusali.\n3. Makinig ka king opisyal a anunsyo king radyo o opisyal a pahayag.\n4. Lumayo ka king mga nasirang lugar; maging handa para sa aftershocks.\n5. Bumalik ka la mu nung sabian na ning mga opisyal a ligtas na.",
+                'language' => 'Kapampangan',
+            ],
         ];
 
         foreach ($entries as $entry) {
