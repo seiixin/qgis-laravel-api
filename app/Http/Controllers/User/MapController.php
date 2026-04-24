@@ -91,7 +91,7 @@ class MapController extends Controller
         $toLng   = $request->to_lng;
         $toLat   = $request->to_lat;
 
-        $url = "https://router.project-osrm.org/route/v1/driving/{$fromLng},{$fromLat};{$toLng},{$toLat}?overview=full&geometries=geojson";
+        $url = "https://router.project-osrm.org/route/v1/driving/{$fromLng},{$fromLat};{$toLng},{$toLat}?overview=full&geometries=geojson&steps=true";
 
         try {
             $ch = curl_init($url);
@@ -105,10 +105,32 @@ class MapController extends Controller
             if ($status === 200 && $body) {
                 $data = json_decode($body, true);
                 if (($data['code'] ?? '') === 'Ok' && !empty($data['routes'][0])) {
+                    $route = $data['routes'][0];
+                    // Extract turn-by-turn steps
+                    $steps = [];
+                    foreach ($route['legs'] ?? [] as $leg) {
+                        foreach ($leg['steps'] ?? [] as $step) {
+                            $maneuver = $step['maneuver'] ?? [];
+                            $type     = $maneuver['type'] ?? '';
+                            $modifier = $maneuver['modifier'] ?? '';
+                            $location = $maneuver['location'] ?? [0, 0];
+                            if ($type && $type !== 'depart') {
+                                $steps[] = [
+                                    'type'     => $type,
+                                    'modifier' => $modifier,
+                                    'lng'      => $location[0],
+                                    'lat'      => $location[1],
+                                    'distance' => $step['distance'] ?? 0,
+                                    'name'     => $step['name'] ?? '',
+                                ];
+                            }
+                        }
+                    }
                     return response()->json([
                         'ok'          => true,
-                        'coordinates' => $data['routes'][0]['geometry']['coordinates'],
-                        'distance'    => $data['routes'][0]['distance'],
+                        'coordinates' => $route['geometry']['coordinates'],
+                        'distance'    => $route['distance'],
+                        'steps'       => $steps,
                     ]);
                 }
             }
