@@ -8,6 +8,9 @@ use App\Http\Controllers\User\InfoController;
 use App\Http\Controllers\User\ImpactController;
 use App\Http\Controllers\User\MapController;
 
+// Route proxy — public, no auth needed (just proxies OSRM, no sensitive data)
+Route::get('/route', [MapController::class, 'route']);
+
 Route::middleware('auth:sanctum')->group(function () {
 
     // Settings — Gap 4 fix: all settings go through SettingsController (AppSetting model)
@@ -38,8 +41,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Impact results
     Route::get('/impact-results', [ImpactController::class, 'index']);
 
-    // Route proxy — forwards to OSRM so the mobile app doesn't need direct access
-    Route::get('/route', [MapController::class, 'route']);
     Route::get('/emergency/hotlines', [ContactController::class, 'hotlines']);
     Route::get('/emergency/contacts', [ContactController::class, 'index']);
     Route::post('/emergency/contacts', [ContactController::class, 'store']);

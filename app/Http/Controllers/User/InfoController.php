@@ -7,9 +7,6 @@ use Illuminate\Http\Request;
 
 class InfoController extends Controller
 {
-    /**
-     * Gap 5 fix: filter by ?language= query param
-     */
     public function index(Request $request)
     {
         $query = EarthquakeInfo::select('id', 'title', 'content', 'media_type', 'media_url', 'language');
@@ -18,6 +15,16 @@ class InfoController extends Controller
             $query->where('language', $request->language);
         }
 
-        return response()->json($query->get(), 200);
+        // Deduplicate by title — keep only the first entry per title
+        $all = $query->orderBy('id')->get();
+        $seen = [];
+        $deduped = $all->filter(function ($item) use (&$seen) {
+            $key = strtolower(trim($item->title));
+            if (isset($seen[$key])) return false;
+            $seen[$key] = true;
+            return true;
+        })->values();
+
+        return response()->json($deduped, 200);
     }
 }
