@@ -102,6 +102,18 @@ class MapController extends Controller
             $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
 
+            // Fallback to secondary OSRM instance if primary fails
+            if ($status !== 200 || !$body) {
+                $url2 = "https://routing.openstreetmap.de/routed-car/route/v1/driving/{$fromLng},{$fromLat};{$toLng},{$toLat}?overview=full&geometries=geojson&steps=true";
+                $ch2 = curl_init($url2);
+                curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch2, CURLOPT_TIMEOUT, 10);
+                curl_setopt($ch2, CURLOPT_HTTPHEADER, ['Accept: application/json']);
+                $body   = curl_exec($ch2);
+                $status = curl_getinfo($ch2, CURLINFO_HTTP_CODE);
+                curl_close($ch2);
+            }
+
             if ($status === 200 && $body) {
                 $data = json_decode($body, true);
                 if (($data['code'] ?? '') === 'Ok' && !empty($data['routes'][0])) {
